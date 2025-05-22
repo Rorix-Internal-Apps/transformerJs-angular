@@ -1,0 +1,30 @@
+<div class="main-container">
+    <div class="detection-container">
+        @if (selectedFile) {
+        <div class="image-wrapper">
+            <img [src]="selectedFile" (load)="onImageLoad($event)" />
+            @if (isLoading) {
+            <div class="loader"></div>
+            }
+            @for (obj of detections; track $index) {
+            <div class="box" [ngStyle]="obj.box">
+                <span class="label">{{ obj.label }} ({{ obj.score }}%)</span>
+            </div>
+            }
+        </div>
+        }
+    </div>
+    <div class="footer-container">
+        @if (!isLoading) {
+        <div>
+            <label class="upload-label" for="file-upload">Upload Image</label>
+            <input type="file" id="file-upload" accept="image/*" (change)="fileChange($event)" hidden>
+        </div>
+        @if (selectedFile) {
+        <div>
+            <label class="upload-label" (click)="detect()">Detect</label>
+        </div>
+        }
+        }
+    </div>
+</div>
