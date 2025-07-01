@@ -47,7 +47,11 @@ export class HomeComponent implements OnInit {
     this.detectionWorkerService.getWorkerSubscriber$().subscribe({
       next: (res: any) => {
         if (res.data.type == "detectionResult") {
-          this.error = '';
+          if(!res.data.detections?.length) {
+            this.error = 'There is nothing to detect';
+          } else {
+            this.error = "";
+          }
           this.modifyDetectionObject(res.data.detections);
         }
         if (res.data.type == "detectionError") {
