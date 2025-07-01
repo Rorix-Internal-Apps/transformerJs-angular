@@ -23,28 +23,29 @@ addEventListener('message', async ({ data }) => {
             'Xenova/detr-resnet-50',
             { dtype: 'fp32' }
           );
-          postMessage({ type: 'model loaded' });
+          postMessage({ type: 'modelLoaded' });
         } catch (error: any) {
-          postMessage({ type: 'model error', error: error.message });
+          postMessage({ type: 'modelError', error: error.message });
         }
       } else {
-        postMessage({ type: 'model already loaded' });
+        postMessage({ type: 'modelAlreadyLoaded' });
       }
       break;
 
     case 'detectObjects':
       if (!detector) {
         postMessage({
-          type: 'detection error',
+          type: 'detectionError',
           error: 'Model not loaded in worker.',
         });
+        console.error('Model not loaded in worker.');
         return;
       }
       try {
         const outputs = await detector(payload, { threshold: 0.9 });
-        postMessage({ type: 'detection result', detections: outputs });
+        postMessage({ type: 'detectionResult', detections: outputs });
       } catch (error: any) {
-        postMessage({ type: 'detection error', error: error.message });
+        postMessage({ type: 'detectionError', error: error.message });
         console.error('Error during detection in worker:', error);
       }
       break;

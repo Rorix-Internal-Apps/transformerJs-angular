@@ -1,4 +1,9 @@
 <div class="main-container">
+    @if(error) {
+    <div class="error">
+        {{error}}
+    </div>
+    }
     <div class="detection-container">
         @if (selectedFile) {
         <div class="image-wrapper">

@@ -5,15 +5,13 @@ import { Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class DetectionWorkerService {
-  worker: Worker | undefined;
-  callbacks: Array<(response: any) => void> = [];
-
-  workerSubscriber$ = new Subject();
+  private worker: Worker | undefined;
+  private workerSubscriber$ = new Subject();
 
   constructor() {
     this.workerInit();
     if (this.worker) {
-      this.worker.postMessage({ type: 'loadModel' });
+      this.sendMessage('loadModel');
     }
   }
 
@@ -32,7 +30,7 @@ export class DetectionWorkerService {
     };
   }
 
-  sendMessage(type: 'loadModel' | 'detectObjects', file: File) {
-    this.worker?.postMessage({type, payload: file});
+  sendMessage(type: 'loadModel' | 'detectObjects', payload?: File) {
+    this.worker?.postMessage({type, payload});
   }
 }
