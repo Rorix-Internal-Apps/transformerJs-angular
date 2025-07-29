@@ -1,7 +1,8 @@
-import { Component, inject, OnInit } from "@angular/core";
+import { Component, DestroyRef, inject, OnInit } from "@angular/core";
 import { SharedModule } from "../../shared/shared.module";
 import { DetectionWorkerService } from "../../services/detection-worker.service";
 import heic2any from "heic2any";
+import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
 interface DetectionResult {
   box: {
@@ -33,6 +34,7 @@ interface ModifiedResult {
 })
 export class HomeComponent implements OnInit {
   private detectionWorkerService = inject(DetectionWorkerService);
+  private destroyRef = inject(DestroyRef);
 
   private fileObject!: File;
   private imageWidth = 0;
@@ -44,7 +46,7 @@ export class HomeComponent implements OnInit {
   error: string = "";
 
   async ngOnInit() {
-    this.detectionWorkerService.getWorkerSubscriber$().subscribe({
+    this.detectionWorkerService.getWorkerSubscriber$().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (res: any) => {
         if (res.data.type == "detectionResult") {
           if(!res.data.detections?.length) {
